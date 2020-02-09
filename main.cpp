@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-#include "mqEngine/MesgQEngine.h"
+#include "src/mqEngine/MesgQEngine.h"
 
 const int PROCESS_RUNNING = 1;
 
