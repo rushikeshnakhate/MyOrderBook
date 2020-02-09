@@ -1,23 +1,29 @@
 #include <thread>
 #include "maching.h"
 
-static Node *buyTree = nullptr;
-static Node *SellTree = nullptr;
 Node *BuyRoot = nullptr;
 Node *sellRoot = nullptr;
 const int FOUND_ONE_ORDER = 1;
 
+
+bool isOppositeOrderEligibleForTrade(OrderPointer oppositeOrder) {
+    return (oppositeOrder->state != State::CXL && oppositeOrder->state != State::REJ &&
+            oppositeOrder->state != State::ALLOCATED);
+}
+
 bool createTrade(OrderPointer oppositeOrder, OrderPointer order) {
-    if (oppositeOrder->quantity == order->quantity) {
+    if (!isOppositeOrderEligibleForTrade(oppositeOrder)) return false;
+
+    if (oppositeOrder->leavesQuantity == order->leavesQuantity) {
         oppositeOrder->allocateOrder();
         order->allocateOrder();
 
-    } else if (oppositeOrder->quantity > order->quantity) {
-        oppositeOrder->partialAllocate(order->quantity);
+    } else if (oppositeOrder->leavesQuantity > order->leavesQuantity) {
+        oppositeOrder->partialAllocate(order->leavesQuantity);
         order->allocateOrder();
     } else {
+        order->partialAllocate(oppositeOrder->leavesQuantity);
         oppositeOrder->allocateOrder();
-        order->partialAllocate(oppositeOrder->quantity);
     }
 
     std::cout << std::this_thread::get_id() << "  Allocated OrderId:" << order->orderId << " Quantity:"
@@ -33,18 +39,23 @@ bool createTrade(OrderPointer oppositeOrder, OrderPointer order) {
     return true;
 }
 
+bool foundSingleOppOrder(Node *oppositeOrder, OrderPointer order) {
+    OrderListPointer listInstance = OrderList::getInstance();
+    OrderID oppositeOrderId = oppositeOrder->orderIdList[0];
+    OrderPointer opOrder = listInstance->getOrder(oppositeOrderId);
+    if (opOrder != nullptr) {
+        return createTrade(opOrder, order);
+    } else {
+        std::cout << "Error:opposite order " << oppositeOrderId << "does not exists in cache" << std::endl;
+    }
+}
+
 
 bool matchTrade(Node *oppositeOrder, OrderPointer order) {
-    OrderListPointer listInstance = OrderList::getInstance();
-
     if (oppositeOrder->count == FOUND_ONE_ORDER) {
-        OrderID oppositeOrderId = oppositeOrder->orderIdList[0];
-        OrderPointer opOrder = listInstance->getOrder(oppositeOrderId);
-        if (opOrder != nullptr) {
-            return createTrade(opOrder, order);
-        } else {
-            std::cout << "Error:opposite order " << oppositeOrderId << "does not exists in cache" << std::endl;
-        }
+        return foundSingleOppOrder(oppositeOrder, order);
+    } else {
+
     }
 }
 
@@ -52,7 +63,7 @@ bool processBuy(OrderPointer order) {
     BuyRoot = insert(BuyRoot, order->price, order->orderId);
     if (sellRoot == nullptr)
         return true;
-    Node *bestOffer = minValueNode(sellRoot);
+    Node *bestOffer = getBestOffer(sellRoot);
     if (bestOffer != nullptr) {
         if (order->price >= bestOffer->price) {
             matchTrade(bestOffer, order);
@@ -62,7 +73,7 @@ bool processBuy(OrderPointer order) {
 
 bool processSell(OrderPointer order) {
     sellRoot = insert(sellRoot, order->price, order->orderId);
-    Node *bestBid = maxValueNode(BuyRoot);
+    Node *bestBid = getBestBid(BuyRoot);
     if (bestBid != nullptr) {
         if (order->price >= bestBid->price) {
             matchTrade(bestBid, order);

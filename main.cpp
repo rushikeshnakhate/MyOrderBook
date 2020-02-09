@@ -8,19 +8,17 @@ int main(int argc, char **argv) {
     try {
         MesgQEngine init;
         std::thread consumer(&MesgQEngine::worker, MesgQEngine());
-        std::this_thread::sleep_for(std::chrono::seconds(2));
+
 
         if (argc < 2) {
-
             while (PROCESS_RUNNING) {
+                std::cout << "Please provide action" << std::endl;
                 std::string message;
                 std::cin >> message;
-                std::this_thread::sleep_for(std::chrono::seconds(2));
                 MesgQEngine::onMessage(message);
+                std::this_thread::sleep_for(std::chrono::seconds(2));
             }
-
         } else {
-
             std::string fileName = argv[1];
             std::ifstream myFile(fileName);
             std::string line;

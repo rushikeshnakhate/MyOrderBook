@@ -24,9 +24,9 @@ int getBalance(Node *N);
 
 Node *insert(Node *node, Price &price, OrderID &orderId);
 
-Node *minValueNode(Node *node);
+Node *getBestOffer(Node *node);
 
-Node *maxValueNode(Node *node);
+Node *getBestBid(Node *node);
 
 Node *deleteNode(Node *root, Price &price);
 

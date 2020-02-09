@@ -38,11 +38,14 @@ struct order {
         this->leavesQuantity = leavesQuantity + newQuantity;
     }
 
-    inline void updateState(State state) {
-        this->state = state;
-        if (state == State::CXL)
-            leavesQuantity = 0;
+
+    inline bool cancelOrder() {
+        if (state == State::CXL || state == State::ALLOCATED || state == State::REJ)
+            return false;
+        leavesQuantity = 0;
+        return true;
     }
+
 
     inline void allocateOrder() {
         this->leavesQuantity = 0;
@@ -51,6 +54,7 @@ struct order {
 
     inline void partialAllocate(Quantity &allocQuantity) {
         this->leavesQuantity = this->leavesQuantity - allocQuantity;
+        this->state = State::PARTIAL_ALLOCATED;
     }
 };
 

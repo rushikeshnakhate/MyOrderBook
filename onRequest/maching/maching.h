@@ -5,18 +5,6 @@
 #include "node.h"
 
 bool getAllocation(OrderPointer order);
-//class Matching {
-//public:
-//    static MatchingAlgo buyTree;
-//    static MatchingAlgo sellTree;
-//
-//    static bool getAllocation(OrderPointer order);
-//
-//    static bool getBestBuy(OrderPointer order);
-//
-//    static bool getBestSell(OrderPointer order);
-//
-//
-//};
+
 
 #endif //MYORDERBOOK_MACHING_H

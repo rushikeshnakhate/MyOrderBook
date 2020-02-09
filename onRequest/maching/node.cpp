@@ -116,7 +116,7 @@ Node *insert(Node *node, Price &price, OrderID &orderId) {
 /* Given a non-empty binary search tree, return the node with minimum
 price value found in that tree. Note that the entire tree does not
 need to be searched. */
-Node *minValueNode(Node *node) {
+Node *getBestOffer(Node *node) {
     Node *current = node;
 
     /* loop down to find the leftmost leaf */
@@ -126,7 +126,7 @@ Node *minValueNode(Node *node) {
     return current;
 }
 
-Node *maxValueNode(Node *node) {
+Node *getBestBid(Node *node) {
     Node *current = node;
 
     /* loop down to find the leftmost leaf */
@@ -180,7 +180,7 @@ Node *deleteNode(Node *root, Price &price) {
         } else {
             // node with two children: Get the inorder successor (smallest
             // in the right subtree)
-            Node *temp = minValueNode(root->right);
+            Node *temp = getBestOffer(root->right);
 
             // Copy the inorder successor's data to this node and update the count
             root->price = temp->price;

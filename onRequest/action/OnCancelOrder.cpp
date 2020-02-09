@@ -11,18 +11,16 @@ bool OnCancelOrder::processTransaction(MesgTokens &tokens) {
     OrderID orderId = atol(tokens[static_cast<int>(NewOrderFieldIndex::OrderID)].c_str());
 
     OrderPointer pOrder = listInstance->getOrder(orderId);
-    if (pOrder->state != State::LIVE && pOrder->state != State::PARTIAL_ALLOCATED) {
+
+    if (pOrder->cancelOrder())
+        std::cout << std::this_thread::get_id() << "  Canceled->" << orderId << std::endl;
+    else {
         std::cout << std::this_thread::get_id() << "  Order not in LIVE state,Current Order State "
                   << getStateToString(pOrder->state)
                   << " Reject->Cancel->" << orderId
                   << std::endl;
         return false;
     }
-
-    pOrder->updateState(State::CXL);
-    std::cout << std::this_thread::get_id() << "  Canceled->" << orderId << std::endl;
-
-
     return true;
 }
 
