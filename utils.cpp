@@ -1,5 +1,6 @@
 #include <string>
 #include "order/Order.h"
+#include "mqEngine/MesgQEngine.h"
 
 namespace OrderSide {
     std::string buy = "buy";

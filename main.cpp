@@ -1,27 +1,43 @@
 #include <iostream>
+#include <fstream>
 #include "mqEngine/MesgQEngine.h"
 
+const int PROCESS_RUNNING = 1;
 
-int main() {
-//    std::string message = "order 1001 buy 100 10";
-//    std::string message1 = "order 1002 buy 100 20";
-//    std::string message2 = "order 1003 buy 100 12.30";
-//    std::string message3 = "order 1004 sell 100 10";
-//    std::string message4 = "order 1005 sell 100 12.30";
-//    std::string message5 = "order 1006 sell 100 12.30";
-//    std::string query = "q order 1001 600";
-
+int main(int argc, char **argv) {
     try {
         MesgQEngine init;
-        std::string message;
         std::thread consumer(&MesgQEngine::worker, MesgQEngine());
         std::this_thread::sleep_for(std::chrono::seconds(2));
-        while (1) {
-            std::cout << "Please pride your query" << std::endl;
-            std::cin >> message;
-            MesgQEngine::onMessage(message);
-            std::this_thread::sleep_for(std::chrono::seconds(1));
+
+        if (argc < 2) {
+            std::cout << "Please provide your query" << std::endl;
+            std::string message;
+            while (PROCESS_RUNNING) {
+                std::cin >> message;
+                std::this_thread::sleep_for(std::chrono::seconds(2));
+                MesgQEngine::onMessage(message);
+            }
+        } else {
+
+            std::string fileName = argv[1];
+            std::ifstream myFile(fileName);
+            std::string line;
+            if (myFile.is_open()) {
+                while (std::getline(myFile, line)) {
+                    std::cout << line << std::endl;
+                    MesgQEngine::onMessage(line);
+                }
+            } else {
+                std::cout << "enable to open file" << std::endl;
+            }
         }
+        while (PROCESS_RUNNING) {
+            std::this_thread::sleep_for(std::chrono::seconds(2));
+        }
+    }
+    catch (std::exception &e) {
+        std::cout << e.what() << std::endl;
 
     }
     catch (...) {
