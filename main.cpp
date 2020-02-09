@@ -12,7 +12,7 @@ int main(int argc, char **argv) {
 
         if (argc < 2) {
             while (PROCESS_RUNNING) {
-                std::cout << "Please provide action" << std::endl;
+                std::cout << "Please provide action without quote" << std::endl;
                 std::string message;
                 std::cin >> message;
                 MesgQEngine::onMessage(message);
