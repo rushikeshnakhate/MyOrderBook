@@ -21,5 +21,7 @@ bool Order::processOrder(MesgTokens &tokens) {
         std::cout << "Error: Invalid request type, received " << tokens[0] << std::endl;
         return false;
     }
+    std::cout << std::endl;
+    
     return true;
 }

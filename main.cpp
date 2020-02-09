@@ -11,13 +11,14 @@ int main(int argc, char **argv) {
         std::this_thread::sleep_for(std::chrono::seconds(2));
 
         if (argc < 2) {
-            std::cout << "Please provide your query" << std::endl;
-            std::string message;
+
             while (PROCESS_RUNNING) {
+                std::string message;
                 std::cin >> message;
                 std::this_thread::sleep_for(std::chrono::seconds(2));
                 MesgQEngine::onMessage(message);
             }
+
         } else {
 
             std::string fileName = argv[1];
@@ -43,5 +44,7 @@ int main(int argc, char **argv) {
     catch (...) {
         std::cout << "Error:un-handled exception " << __FILE__ << ":" << __LINE__ << std::endl;
     }
+
     return 0;
 }
+

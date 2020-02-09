@@ -1,3 +1,4 @@
+#include <thread>
 #include "maching.h"
 
 static Node *buyTree = nullptr;
@@ -19,13 +20,15 @@ bool createTrade(OrderPointer oppositeOrder, OrderPointer order) {
         order->partialAllocate(oppositeOrder->quantity);
     }
 
-    std::cout << "Allocated OrderId:" << order->orderId << " Quantity:" << order->quantity << " LeavesQuantity:"
+    std::cout << std::this_thread::get_id() << "  Allocated OrderId:" << order->orderId << " Quantity:"
+              << order->quantity << " LeavesQuantity:"
               << order->leavesQuantity << " Price:" << order->price << " State:" << getStateToString(order->state)
               << std::endl;
-    std::cout << "Opposite  OrderId << " << oppositeOrder->orderId << "Quantity:" << oppositeOrder->quantity
+    std::cout << std::this_thread::get_id() << "  Opposite  OrderId << " << oppositeOrder->orderId << " Quantity:"
+              << oppositeOrder->quantity
               << " LeavesQuantity:"
               << oppositeOrder->leavesQuantity << " Price:" << oppositeOrder->price << " State:"
-              << getStateToString(order->state) << std::endl;
+              << getStateToString(oppositeOrder->state) << std::endl;
 
     return true;
 }
@@ -47,6 +50,8 @@ bool matchTrade(Node *oppositeOrder, OrderPointer order) {
 
 bool processBuy(OrderPointer order) {
     BuyRoot = insert(BuyRoot, order->price, order->orderId);
+    if (sellRoot == nullptr)
+        return true;
     Node *bestOffer = minValueNode(sellRoot);
     if (bestOffer != nullptr) {
         if (order->price >= bestOffer->price) {
@@ -57,16 +62,13 @@ bool processBuy(OrderPointer order) {
 
 bool processSell(OrderPointer order) {
     sellRoot = insert(sellRoot, order->price, order->orderId);
-    Node *bestBid = getBestBidOfferUsingPostOrder(BuyRoot);
+    Node *bestBid = maxValueNode(BuyRoot);
     if (bestBid != nullptr) {
-        std::cout << bestBid->price << std::endl;
-        for (auto x : bestBid->orderIdList) {
-            std::cout << "orderId:" << x << std::endl;
+        if (order->price >= bestBid->price) {
+            matchTrade(bestBid, order);
         }
     }
-    return true;
 }
-
 
 bool getAllocation(OrderPointer order) {
     if (order->side == BookType::sell)

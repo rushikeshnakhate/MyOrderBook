@@ -1,7 +1,7 @@
-"order 1001 buy 100 10"
-"order 1002 buy 100 20"
-"order 1003 buy 100 12.30"
-"order 1004 sell 100 10"
-"order 1005 sell 100 12.30"
-"order 1006 sell 100 12.30"
-"q order 1001 600"
+order 1001 buy 100 10
+order 1002 buy 100 20
+order 1003 buy 100 12.30
+order 1004 sell 100 10
+order 1005 sell 100 12.30
+order 1006 sell 100 12.30
+q order 1001 600

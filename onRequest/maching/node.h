@@ -26,11 +26,11 @@ Node *insert(Node *node, Price &price, OrderID &orderId);
 
 Node *minValueNode(Node *node);
 
-//Node *maxValueNode(Node *node);
+Node *maxValueNode(Node *node);
 
 Node *deleteNode(Node *root, Price &price);
 
-Node* getBestBidOfferUsingPostOrder(Node *root);
+Node *getBestBidOfferUsingPostOrder(Node *root);
 
 #endif //MYORDERBOOK_NODE_H
 

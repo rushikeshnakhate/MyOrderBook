@@ -126,6 +126,17 @@ Node *minValueNode(Node *node) {
     return current;
 }
 
+Node *maxValueNode(Node *node) {
+    Node *current = node;
+
+    /* loop down to find the leftmost leaf */
+    while (current->right != nullptr)
+        current = current->right;
+
+    return current;
+}
+
+
 
 Node *deleteNode(Node *root, Price &price) {
     // STEP 1: PERFORM STANDARD BST DELETE

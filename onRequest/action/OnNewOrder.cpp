@@ -17,7 +17,6 @@ bool OnNewOrder::processTransaction(MesgTokens &tokens) {
     OrderPointer newOrder = createNewOrder(orderId, tokens);
     listInstance->updateOrderInList(newOrder, newOrder->orderId);
 
-//    Matching::getAllocation(newOrder);
     getAllocation(newOrder);
 
 }
